@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account | Threat Protection System</title>
+    <style>
+        :root {
+            --primary-neon: #00d4ff;
+            --secondary-neon: #0051ff;
+            --bg-deep: #020617;
+            --card-bg: rgba(10, 18, 35, 0.9);
+            --border-color: rgba(0, 212, 255, 0.3);
+            --text-main: #e2e8f0;
+            --text-dim: #94a3b8;
+            --font-main: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --error-red: #ff4d4d;
+            --success-green: #00ffaa;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes borderFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes bgMove {
+            0% { background-position: 0 0; }
+            100% { background-position: 100px 100px; }
+        }
+
+        @keyframes scan {
+            0% { top: -100%; }
+            100% { top: 100%; }
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg-deep);
+            background-image: 
+                radial-gradient(circle at 50% 50%, rgba(0, 81, 255, 0.1) 0%, transparent 80%),
+                url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0l25.98 15v30L30 60 4.02 45V15z' fill-opacity='0.03' fill='%2300d4ff' fill-rule='evenodd'/%3E%3C/svg%3E");
+            animation: bgMove 20s linear infinite;
+            color: var(--text-main);
+            font-family: var(--font-main);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary-neon), transparent);
+            opacity: 0.1;
+            z-index: 10;
+            animation: scan 8s linear infinite;
+            pointer-events: none;
+        }
+
+        .container { 
+            width: 100%; 
+            max-width: 500px; 
+            animation: fadeInUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        .header { 
+            text-align: center; 
+            margin-bottom: 30px; 
+        }
+
+        .header h1 {
+            font-size: 2.2rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: -1px;
+            background: linear-gradient(to right, #fff, var(--primary-neon));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            color: var(--primary-neon);
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            opacity: 0.8;
+            font-weight: 600;
+        }
+
+        .card-wrapper {
+            position: relative;
+            padding: 2px;
+            border-radius: 18px;
+            background: linear-gradient(90deg, var(--border-color), var(--primary-neon), var(--border-color));
+            background-size: 200% 200%;
+            animation: borderFlow 4s linear infinite;
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before, .card::after {
+            content: "";
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            border: 2px solid var(--primary-neon);
+            opacity: 0.5;
+        }
+        .card::before { top: 15px; left: 15px; border-right: 0; border-bottom: 0; }
+        .card::after { bottom: 15px; right: 15px; border-left: 0; border-top: 0; }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 600;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: var(--primary-neon);
+            background: rgba(0, 212, 255, 0.08);
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.15);
+        }
+
+        .feedback-box {
+            margin-top: 10px;
+            padding: 10px 15px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            display: none;
+            font-weight: 500;
+        }
+
+        .feedback-success {
+            background: rgba(0, 255, 170, 0.1);
+            border: 1px solid var(--success-green);
+            color: var(--success-green);
+            display: block;
+        }
+
+        .feedback-error {
+            background: rgba(255, 77, 77, 0.1);
+            border: 1px solid var(--error-red);
+            color: var(--error-red);
+            display: block;
+        }
+
+        .password-requirements {
+            list-style: none;
+            margin-top: 12px;
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+        }
+
+        .requirement {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.3s ease;
+        }
+
+        .requirement.valid { color: var(--success-green); }
+        .requirement.valid::before { content: "✓"; }
+        .requirement:not(.valid)::before { content: "•"; }
+
+        .btn-register {
+            width: 100%;
+            padding: 16px;
+            margin-top: 25px;
+            background: var(--primary-neon);
+            color: var(--bg-deep);
+            border: none;
+            border-radius: 8px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+        }
+
+        .btn-register:hover {
+            background: #fff;
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 12px 25px rgba(0, 212, 255, 0.5);
+        }
+
+        .footer-links {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            line-height: 1.6;
+        }
+
+        .footer-links a {
+            color: var(--primary-neon);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: #fff;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Create Account</h1>
+            <p>// SECURE_IDENTITY_PROVISIONING //</p>
+        </div>
+
+        <div class="card-wrapper">
+            <div class="card">
+                <form id="registerForm">
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" placeholder="identity@domain.com" required>
+                        <div id="emailStatus" class="feedback-box"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Security Password</label>
+                        <input type="password" id="password" placeholder="••••••••" required>
+                        <ul class="password-requirements">
+                            <li id="req-length" class="requirement">8+ characters</li>
+                            <li id="req-upper" class="requirement">Uppercase</li>
+                            <li id="req-number" class="requirement">Number</li>
+                            <li id="req-special" class="requirement">Special char</li>
+                        </ul>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirm Password</label>
+                        <input type="password" id="confirmPassword" placeholder="••••••••" required>
+                    </div>
+
+                    <!-- Typing Verification Section -->
+                    <div class="typing-section" style="margin: 30px 0; padding: 20px; background: rgba(0, 212, 255, 0.05); border-radius: 12px; border: 1px solid rgba(0, 212, 255, 0.2);">
+                        <label style="color: var(--primary-neon); font-size: 0.9rem; margin-bottom: 15px; display: block;">
+                            🔐 HUMAN VERIFICATION - Type the sentence below
+                        </label>
+                        
+                        <div id="sentenceDisplay" style="background: rgba(0,0,0,0.5); padding: 20px; border-radius: 8px; margin: 15px 0; font-size: 1.1rem; line-height: 1.6; color: #fff; border-left: 3px solid var(--primary-neon); font-family: monospace;">
+                            Loading verification sentence...
+                        </div>
+
+                        <div class="typing-area">
+                            <textarea id="typingInput" 
+                                      placeholder="Type the sentence exactly as shown above..." 
+                                      style="width: 100%; padding: 15px; background: rgba(0,0,0,0.3); border: 1px solid rgba(0,212,255,0.3); border-radius: 8px; color: #fff; min-height: 100px; resize: vertical; font-family: monospace;"
+                                      disabled></textarea>
+                        </div>
+
+                        <div id="typingStatus" style="margin-top: 10px; font-size: 0.85rem; color: var(--text-dim); text-align: center;">
+                            ⏳ Please type the sentence exactly as shown
+                        </div>
+                    </div>
+
+                    <!-- Device Info Display (will be added by JavaScript) -->
+                    
+                    <div id="formError" class="feedback-box feedback-error" style="display:none;"></div>
+
+                    <button type="submit" class="btn-register" id="registerBtn">Initialize Registry</button>
+                </form>
+
+                <div class="footer-links">
+                    Already authenticated? <a href="/login">Secure Login</a><br>
+                    <a href="/">← Return to System Terminal</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // ==================== DOM ELEMENTS ====================
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            const confirmInput = document.getElementById('confirmPassword');
+            const emailStatus = document.getElementById('emailStatus');
+            const formError = document.getElementById('formError');
+            const registerBtn = document.getElementById('registerBtn');
+            const typingInput = document.getElementById('typingInput');
+            const typingStatus = document.getElementById('typingStatus');
+            const sentenceDisplay = document.getElementById('sentenceDisplay');
+
+            // ==================== STATE VARIABLES ====================
+            let currentSentence = '';
+            let sentenceStartTime = null;
+            let isVerified = false;
+            
+            // Location and Device Data
+            let userLocation = {
+                latitude: null,
+                longitude: null,
+                city: 'Unknown',
+                country: 'Unknown',
+                ip: 'Unknown'
+            };
+
+            let userDevice = {
+                fingerprint: '',
+                browser: '',
+                os: '',
+                screen: '',
+                language: '',
+                timezone: '',
+                cores: navigator.hardwareConcurrency || 'unknown',
+                memory: navigator.deviceMemory || 'unknown',
+                touchSupport: 'ontouchstart' in window,
+                cookiesEnabled: navigator.cookieEnabled
+            };
+
+            // ==================== EMAIL VALIDATION ====================
+            emailInput.addEventListener('input', () => {
+                const email = emailInput.value;
+                if (email.includes('@') && email.includes('.')) {
+                    emailStatus.style.display = 'block';
+                    emailStatus.className = 'feedback-box feedback-success';
+                    emailStatus.textContent = '✓ Email format valid';
+                } else {
+                    emailStatus.style.display = 'none';
+                }
+            });
+
+            // ==================== PASSWORD VALIDATION ====================
+            passwordInput.addEventListener('input', () => {
+                const val = passwordInput.value;
+                document.getElementById('req-length').classList.toggle('valid', val.length >= 8);
+                document.getElementById('req-upper').classList.toggle('valid', /[A-Z]/.test(val));
+                document.getElementById('req-number').classList.toggle('valid', /[0-9]/.test(val));
+                document.getElementById('req-special').classList.toggle('valid', /[^A-Za-z0-9]/.test(val));
+            });
+
+            // ==================== DEVICE FINGERPRINT ====================
+            function generateDeviceFingerprint() {
+                const components = [
+                    navigator.userAgent,
+                    navigator.language,
+                    navigator.platform,
+                    screen.colorDepth,
+                    screen.width + 'x' + screen.height,
+                    new Date().getTimezoneOffset(),
+                    navigator.hardwareConcurrency || '',
+                    navigator.deviceMemory || '',
+                    !!window.indexedDB,
+                    !!navigator.cookieEnabled
+                ];
+                
+                const fingerprintString = components.join('|');
+                let hash = 0;
+                for (let i = 0; i < fingerprintString.length; i++) {
+                    const char = fingerprintString.charCodeAt(i);
+                    hash = ((hash << 5) - hash) + char;
+                    hash = hash & hash;
+                }
+                return Math.abs(hash).toString(16);
+            }
+
+            // ==================== BROWSER/OS DETECTION ====================
+            function detectBrowserOS() {
+                const ua = navigator.userAgent;
+                
+                // Browser detection
+                if (ua.includes('Firefox')) userDevice.browser = 'Firefox';
+                else if (ua.includes('Chrome')) userDevice.browser = 'Chrome';
+                else if (ua.includes('Safari')) userDevice.browser = 'Safari';
+                else if (ua.includes('Edge')) userDevice.browser = 'Edge';
+                else userDevice.browser = 'Unknown';
+                
+                // OS detection
+                if (ua.includes('Windows')) userDevice.os = 'Windows';
+                else if (ua.includes('Mac')) userDevice.os = 'macOS';
+                else if (ua.includes('Linux')) userDevice.os = 'Linux';
+                else if (ua.includes('Android')) userDevice.os = 'Android';
+                else if (ua.includes('iPhone') || ua.includes('iPad')) userDevice.os = 'iOS';
+                else userDevice.os = 'Unknown';
+                
+                userDevice.screen = `${screen.width}x${screen.height}`;
+                userDevice.language = navigator.language;
+                userDevice.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                userDevice.fingerprint = generateDeviceFingerprint();
+            }
+
+            // ==================== LOCATION DETECTION ====================
+            async function detectLocation() {
+                try {
+                    const response = await fetch('https://ipapi.co/json/');
+                    const data = await response.json();
+                    
+                    userLocation = {
+                        latitude: data.latitude || null,
+                        longitude: data.longitude || null,
+                        city: data.city || 'Unknown',
+                        country: data.country_name || 'Unknown',
+                        ip: data.ip || 'Unknown'
+                    };
+                    console.log('📍 Location detected:', userLocation);
+                } catch (error) {
+                    console.log('Location detection failed, using fallback');
+                    // Fallback to ip-api.com
+                    try {
+                        const response = await fetch('http://ip-api.com/json/?fields=status,country,city,lat,lon,query');
+                        const data = await response.json();
+                        if (data.status === 'success') {
+                            userLocation = {
+                                latitude: data.lat,
+                                longitude: data.lon,
+                                city: data.city,
+                                country: data.country,
+                                ip: data.query
+                            };
+                        }
+                    } catch (e) {
+                        console.log('All location services failed');
+                    }
+                }
+            }
+
+            // ==================== DISPLAY DEVICE INFO ====================
+            function addDeviceInfoDisplay() {
+                const typingSection = document.querySelector('.typing-section');
+                
+                const deviceInfoDiv = document.createElement('div');
+                deviceInfoDiv.id = 'deviceInfo';
+                deviceInfoDiv.style.marginTop = '20px';
+                deviceInfoDiv.style.padding = '15px';
+                deviceInfoDiv.style.background = 'rgba(0, 0, 0, 0.3)';
+                deviceInfoDiv.style.borderRadius = '8px';
+                deviceInfoDiv.style.border = '1px solid rgba(0, 212, 255, 0.2)';
+                deviceInfoDiv.style.fontSize = '0.85rem';
+                deviceInfoDiv.style.color = 'var(--text-dim)';
+                
+                deviceInfoDiv.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                        <span style="color: var(--primary-neon);">🖥️</span>
+                        <span style="font-weight: 600; color: var(--primary-neon);">DEVICE IDENTITY</span>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <div><span style="color: var(--primary-neon);">Browser:</span> <span id="displayBrowser">Detecting...</span></div>
+                        <div><span style="color: var(--primary-neon);">OS:</span> <span id="displayOS">Detecting...</span></div>
+                        <div><span style="color: var(--primary-neon);">Screen:</span> <span id="displayScreen">Detecting...</span></div>
+                        <div><span style="color: var(--primary-neon);">Language:</span> <span id="displayLang">Detecting...</span></div>
+                    </div>
+                    <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(0,212,255,0.2);">
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 5px;">
+                            <span style="color: var(--primary-neon);">📍</span>
+                            <span style="font-weight: 600; color: var(--primary-neon);">LOCATION</span>
+                        </div>
+                        <div><span style="color: var(--primary-neon);">IP:</span> <span id="displayIP">Detecting...</span></div>
+                        <div><span style="color: var(--primary-neon);">City/Country:</span> <span id="displayLocation">Detecting...</span></div>
+                    </div>
+                `;
+                
+                typingSection.parentNode.insertBefore(deviceInfoDiv, typingSection.nextSibling);
+            }
+
+            // ==================== UPDATE DEVICE DISPLAY ====================
+            function updateDeviceDisplay() {
+                if (document.getElementById('displayBrowser')) {
+                    document.getElementById('displayBrowser').textContent = userDevice.browser || 'Unknown';
+                    document.getElementById('displayOS').textContent = userDevice.os || 'Unknown';
+                    document.getElementById('displayScreen').textContent = userDevice.screen || 'Unknown';
+                    document.getElementById('displayLang').textContent = userDevice.language || 'Unknown';
+                    document.getElementById('displayIP').textContent = userLocation.ip || 'Unknown';
+                    document.getElementById('displayLocation').textContent = 
+                        (userLocation.city !== 'Unknown' && userLocation.country !== 'Unknown') 
+                        ? `${userLocation.city}, ${userLocation.country}` 
+                        : 'Unknown';
+                }
+            }
+
+            // ==================== LOAD VERIFICATION SENTENCE ====================
+            async function loadVerificationSentence() {
+                try {
+                    const response = await fetch('/api/typing-sentences');
+                    const data = await response.json();
+                    currentSentence = data.sentences[0];
+                    sentenceDisplay.innerHTML = `🔷 <strong>${currentSentence}</strong>`;
+                    
+                    typingInput.disabled = false;
+                    
+                } catch (error) {
+                    console.log('Using fallback sentence');
+                    currentSentence = "The quick brown fox jumps over the lazy dog.";
+                    sentenceDisplay.innerHTML = `🔷 <strong>${currentSentence}</strong>`;
+                    typingInput.disabled = false;
+                }
+            }
+
+            // ==================== TYPING TIMER ====================
+            typingInput.addEventListener('focus', function() {
+                if (!sentenceStartTime) {
+                    sentenceStartTime = Date.now();
+                    console.log('Typing started at:', new Date().toLocaleTimeString());
+                }
+            });
+
+            // ==================== TYPING INPUT HANDLER ====================
+            typingInput.addEventListener('input', function() {
+                const typed = this.value;
+                
+                if (typed === currentSentence) {
+                    typingStatus.innerHTML = '✅ Verification complete!';
+                    typingStatus.style.color = 'var(--success-green)';
+                    isVerified = true;
+                } else {
+                    typingStatus.innerHTML = '⏳ Please type the sentence exactly as shown';
+                    typingStatus.style.color = 'var(--text-dim)';
+                    isVerified = false;
+                }
+            });
+
+            // ==================== PREVENT COPY/PASTE ====================
+            typingInput.addEventListener('paste', (e) => {
+                e.preventDefault();
+                console.log('Paste detected - suspicious');
+            });
+
+            typingInput.addEventListener('copy', (e) => {
+                e.preventDefault();
+                console.log('Copy detected - suspicious');
+            });
+
+            typingInput.addEventListener('cut', (e) => {
+                e.preventDefault();
+                console.log('Cut detected - suspicious');
+            });
+
+            // ==================== TAB SWITCHING DETECTION ====================
+            window.addEventListener('blur', () => {
+                if (sentenceStartTime && !isVerified) {
+                    console.log('⚠️ User left page during typing - suspicious');
+                }
+            });
+
+            // ==================== FORM SUBMISSION ====================
+            document.getElementById('registerForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const email = emailInput.value.trim();
+                const password = passwordInput.value;
+                const confirmPassword = confirmInput.value;
+                
+                // Validation checks
+                if (!email || !password || !confirmPassword) {
+                    formError.textContent = 'All fields are required!';
+                    formError.className = 'feedback-box feedback-error';
+                    formError.style.display = 'block';
+                    return;
+                }
+                
+                if (!isVerified) {
+                    formError.textContent = 'Please complete the typing verification!';
+                    formError.className = 'feedback-box feedback-error';
+                    formError.style.display = 'block';
+                    return;
+                }
+                
+                if (password !== confirmPassword) {
+                    formError.textContent = 'Passwords do not match!';
+                    formError.className = 'feedback-box feedback-error';
+                    formError.style.display = 'block';
+                    return;
+                }
+                
+                // Disable button during submission
+                registerBtn.disabled = true;
+                registerBtn.textContent = 'PROCESSING...';
+                
+                try {
+                    // First register the user
+                    const registerResponse = await fetch('/api/register', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email, password })
+                    });
+                    
+                    const registerData = await registerResponse.json();
+                    
+                    if (registerResponse.ok) {
+                        // Calculate typing time
+                        const endTime = Date.now();
+                        const timeTaken = sentenceStartTime ? ((endTime - sentenceStartTime) / 1000).toFixed(2) : 0;
+                        
+                        // Send typing and device data
+                        await fetch('/api/register-typing', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                email: email,
+                                sentence: currentSentence,
+                                time_taken: parseFloat(timeTaken),
+                                device_info: {
+                                    fingerprint: userDevice.fingerprint,
+                                    browser: userDevice.browser,
+                                    os: userDevice.os,
+                                    screen: userDevice.screen,
+                                    language: userDevice.language,
+                                    timezone: userDevice.timezone,
+                                    cores: userDevice.cores,
+                                    memory: userDevice.memory,
+                                    touchSupport: userDevice.touchSupport
+                                },
+                                location: {
+                                    ip: userLocation.ip,
+                                    city: userLocation.city,
+                                    country: userLocation.country,
+                                    latitude: userLocation.latitude,
+                                    longitude: userLocation.longitude
+                                },
+                                typed_text: typingInput.value
+                            })
+                        });
+                        
+                        // Success message
+                        formError.className = 'feedback-box feedback-success';
+                        formError.textContent = '✅ Registration successful! Redirecting to login...';
+                        formError.style.display = 'block';
+                        
+                        // Redirect to login
+                        setTimeout(() => {
+                            window.location.href = '/login';
+                        }, 2000);
+                    } else {
+                        // Registration failed
+                        formError.textContent = registerData.detail || 'Registration failed';
+                        formError.className = 'feedback-box feedback-error';
+                        formError.style.display = 'block';
+                        registerBtn.disabled = false;
+                        registerBtn.textContent = 'Initialize Registry';
+                    }
+                } catch (error) {
+                    console.error('Registration error:', error);
+                    formError.textContent = 'Network error. Please try again.';
+                    formError.className = 'feedback-box feedback-error';
+                    formError.style.display = 'block';
+                    registerBtn.disabled = false;
+                    registerBtn.textContent = 'Initialize Registry';
+                }
+            });
+
+            // ==================== INITIALIZATION ====================
+            async function initialize() {
+                // Show loading state
+                formError.className = 'feedback-box feedback-success';
+                formError.textContent = '⏳ Detecting device and location...';
+                formError.style.display = 'block';
+                
+                // Detect device first
+                detectBrowserOS();
+                addDeviceInfoDisplay();
+                updateDeviceDisplay();
+                
+                // Get location
+                await detectLocation();
+                updateDeviceDisplay();
+                
+                // Load sentence
+                await loadVerificationSentence();
+                
+                // Update display with location
+                updateDeviceDisplay();
+                
+                // Hide loading
+                formError.style.display = 'none';
+                
+                console.log('✅ Initialization complete');
+                console.log('🖥️ Device:', userDevice);
+                console.log('📍 Location:', userLocation);
+            }
+
+            // Start initialization
+            initialize();
+        })();
+    </script>
+</body>
+</html>
